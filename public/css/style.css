@@ -1,0 +1,81 @@
+body{
+	/*background-image:url("/bg2.jpg") !important;*/
+}
+.logo-header{
+	background-image: url("/header.jpg"); 
+	background-position: right;
+}
+.navbar-default {
+	background-color: #27ae60;
+	border-color: #27ae60;
+}
+.navbar-default .navbar-nav>li>a {
+	color: #d6d1d1;
+}
+.navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+	color: #fff;
+	background-color: transparent;
+}
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover {
+	color: #fff;
+    background-color: #249453;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: #fff;
+    background-color: #249453;
+}
+
+.navbar-default .navbar-brand {
+	color: #fff;
+}
+
+.cp{
+
+}
+#page {
+	display: none;
+}
+#loading {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 100;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(192, 192, 192, 0.5);
+	background-image: url("http://i.stack.imgur.com/MnyxU.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.custom-header-logo{
+	margin-top: 12px;
+	color: white;
+}
+.panel-success, .panel-primary, .panel-info{
+	box-shadow: 8px 11px 20px #989494;
+}
+
+.panel-success {
+	border-color: #27ae60;
+}
+.panel-success>.panel-heading {
+	color: white;
+	background-color: #27ae60;
+	border-color: #27ae60;
+}
+
+.footer{
+	position: fixed;
+	bottom: 0;
+	margin-top: 20px;
+	padding:20px;
+	width: 100%;
+	background-color: #f5f5f5;
+	display: block;
+}
+.footer .center{
+	text-align: center;
+}

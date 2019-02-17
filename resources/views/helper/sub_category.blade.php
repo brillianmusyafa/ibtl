@@ -1,0 +1,1 @@
+{!! Form::select('sub_category',$data,null,['class'=>'form-control']) !!}
