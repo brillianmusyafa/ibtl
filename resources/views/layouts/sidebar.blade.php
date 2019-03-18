@@ -24,7 +24,7 @@
         </span>
       </a>
       <ul class="treeview-menu">
-        <li><a href="{{url('admin/report')}}">Desa yang belum</a></li>
+        <li><a href="{{url('admin/report/desa')}}">Desa yang belum</a></li>
         <li><a href="{{url('admin/page/3/edit')}}">All</a></li>
         <li><a href="{{url('admin/page')}}">Tahunan</a></li>
         <li><a href="{{url('admin/users')}}">User</a></li>

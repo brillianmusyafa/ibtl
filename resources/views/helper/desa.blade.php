@@ -1,1 +1,1 @@
-{!! Form::select('desa_id',$desa,null,['class'=>'form-control']) !!}
+{!! Form::select('desa_id',$desa,null,['class'=>'form-control','placeholder'=>'-Pilih Desa']) !!}

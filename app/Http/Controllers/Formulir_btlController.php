@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use DB;
 use App\Formulir_btl;
 use App\Category;
 use App\Kecamatan;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 use Session;
 use Yajra\Datatables\Datatables;
 use App\User;
+use Excel;
+use App\Imports\FormulirImport;
 
 class Formulir_btlController extends Controller
 {
@@ -50,20 +53,34 @@ class Formulir_btlController extends Controller
     public function anyData(Request $request)
     {
         $input = $request->all();
-        $model = Formulir_btl::with(['Kecamatan','Desa','Category'])->orderBy('updated_at','ASC');
+        // $model = Formulir_btl::with(['Kecamatan','Desa','Category'])->orderBy('updated_at','ASC');
+        $model = Formulir_btl::leftJoin('categories as c','c.id','=','formulir_btls.category')
+        ->leftJoin('districts as d','d.id','=','formulir_btls.kecamatan_id')
+        ->leftJoin('villages as v','v.id','=','formulir_btls.desa_id')
+        ->select('formulir_btls.*','c.nama_category','d.name as kecamatan','v.name as desa');
+
         if(isset($input['kecamatan_id'])){
-            $model = $model->where('kecamatan_id',$input['kecamatan_id']);
+            $model = $model->where('b.kecamatan_id',$input['kecamatan_id']);
         }
 
         $request->flash();
-        return DataTables::of($model)->make(true);
+        return DataTables::of($model)
+        ->addColumn('action', function ($user) {
+            $url = action('Formulir_btlController@edit',['id'=>$user->id]);
+            $url_hapus = action('Formulir_btlController@datatable_destroy',['id'=>$user->id]);
+            return '<a href="'.$url.'" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Ubah</a>
+            <form action="'.$url_hapus.'" method="POST" role="form">
+                <input type="hidden" name="_token" value="'.csrf_token().'">
+                <input type="hidden" name="id" value="'.$user->id.'">
+                <button type="submit" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i>Hapus</button>
+            </form>';
+        })
+        ->make(true);
     }
 
     public function getBasic(){
         $formulir_btl = Formulir_btl::orderBy('updated_at','ASC');
         return DataTables::of($formulir_btl)->make();
-
-
     }
 
     /**
@@ -215,10 +232,53 @@ class Formulir_btlController extends Controller
         return redirect()->back();
     }
 
+    public function datatable_destroy($id)
+    {
+        Formulir_btl::destroy($id);
+
+        Session::flash('flash_message', 'Formulir_btl deleted!');
+
+        return redirect('admin/formulir_btl');
+    }
+
     public function halaman_umum($category)
     {
-        $data = Formulir_btl::where('category',$category)->get();
+        // $data = Formulir_btl::where('category',$category)->get();
         $category = Category::findOrFail($category);
-        return view('daftar_btl',compact('data','category'));
+        return view('daftar_btl',compact('category'));
+    }
+
+    public function anyDataFrontPage($category,Request $request)
+    {
+        $input = $request->all();
+        // $model = Formulir_btl::
+        // ->where('category',$category)
+        // ->orderBy('updated_at','ASC');
+
+        $model = Formulir_btl::leftJoin('categories as c','c.id','=','formulir_btls.category')
+        ->leftJoin('districts as d','d.id','=','formulir_btls.kecamatan_id')
+        ->leftJoin('villages as v','v.id','=','formulir_btls.desa_id')
+        ->select('formulir_btls.*','c.nama_category','d.name as kecamatan','v.name as desa');
+
+        if($category){
+            $model = $model->where('category',$category);
+        }
+
+        if(isset($input['kecamatan_id'])){
+            $model = $model->where('kecamatan_id',$input['kecamatan_id']);
+        }
+
+        $request->flash();
+        return DataTables::of($model)->make(true);
+    }
+
+    public function importExcel(Request $req)
+    {
+        # code...
+        $hasil = Excel::import(new FormulirImport, $req->file('import_name'));
+        Session::flash('flash_message','Data Berhasil Diupload');
+        return redirect()->back();
+        // Excel::import();
+        // return $req->file('import_name');
     }
 }

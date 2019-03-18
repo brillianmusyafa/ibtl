@@ -64,6 +64,7 @@ Route::group(['prefix'=>'admin','middleware'=>'auth'],function(){
 	Route::resource('menu', 'MenuController');
 	// formulir
 	Route::resource('formulir_btl', 'Formulir_btlController');
+	Route::post('datatable/formulir_btl/hapus/{id}','Formulir_btlController@datatable_destroy');
 	// Route::group(['prefix'=>'datatable'],function(){
 	// 	Route::get('formulir_btl','Formulir_btl@getBasic');
 	// });
@@ -110,4 +111,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['prefix'=>'datatables'],function(){
 	Route::get('formulir','Formulir_btlController@anyData')->name('datatables.formulir');
+	Route::get('formulir_front/{category?}','Formulir_btlController@anyDataFrontPage')->name('datatables.formulir_front');
 });
+
+// import data
+Route::post('import','Formulir_btlController@importExcel');

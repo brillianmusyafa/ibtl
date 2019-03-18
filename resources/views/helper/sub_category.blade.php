@@ -1,1 +1,1 @@
-{!! Form::select('sub_category',$data,null,['class'=>'form-control']) !!}
+{!! Form::select('sub_category',$data,null,['class'=>'form-control','placeholder'=>'-Pilih Subcategory']) !!}

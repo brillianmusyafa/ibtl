@@ -56,4 +56,27 @@ class Formulir_btl extends Model
     {
         return $this->belongsTo('App\Desa', 'desa_id', 'id');
     }
+
+
+
+    // jika ada IDnya, update
+    public function checkId(){
+
+    }
+    // jika ada kecamatannya
+    public function checkKecamatan($row){
+        $data = Kecamatan::findOrFail($row);
+        if($data){
+            return $data;
+        }
+        return false;
+    }
+
+    // jika ada Desa
+    public function checkDesa($district,$nama_desa){
+        $data = Desa::where('district_id',$district)->where('name',$nama_desa)->first();
+
+        return $data;
+
+    }
 }

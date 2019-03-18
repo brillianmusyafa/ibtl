@@ -15,73 +15,81 @@
 
 <h1 class="judul">{{$category->nama_category}}</h1>
 <div style="overflow-x:auto;">
-	<table class="table table-bordered table-hover" id="datatables">
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Kecamatan</th>
-				<th>Desa</th>
-				<th>Penerima</th>
-				<th>Judul</th>
-				<th>Berkas Masuk</th>
-				<th>Nilai</th>
-				<th>Pencairan</th>
-				<th></th>
-				<!-- <th>Keterangan</th> -->
-			</tr>
-		</thead>
-		<tbody>
-			<?php $no=1; ?>
-			@foreach($data as $d)
-			<?php 
-			$class = '';
-			if($d->bendahara==1 && $d->spm==1 && $d->pengguna_anggaran==1){
-				$class = 'success';
-			}
-			if($d->kelengkapan=='tidak lengkap'){
-				$class = 'danger';
-			}
-			?>
-			<tr class="{{$class}}">
-				<td>{{$no++}}</td>
-				<td>{{ $d->Kecamatan->name or '-'}}</td>
-				<td>{{ $d->Desa->name or '-' }}</td>
-				<td>{{ $d->penerima }}</td>
-				<td>{{ $d->judul_berkas }}</td>
-				<td>{{ $d->berkas_masuk_tgl }}</td>
-				<td>Rp. {{ is_numeric($d->nilai)?number_format($d->nilai,0,'.','.'):$d->nilai}}</td>
-				<td>{{ $d->pencairan_bulan}}</td>
-				<td>
-					<table class="table table-condensed">
-						<thead>
-							<tr>
-								<th>Bendahara</th>
-								<th>SPM</th>
-								<th>Pengguna Anggaran</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									{{$d->bendahara==1?'OK':''}}
-									<p class="keterangan">{{$d->ket_bendahara}}</p>
-								</td>
-								<td>
-									{{$d->spm==1?'OK':''}}
-									<p class="keterangan">{{$d->ket_spm}}</p>
-								</td>
-								<td>
-									{{$d->pengguna_anggaran==1?'OK':''}}
-									<p class="keterangan">{{$d->ket_pengguna_anggaran}}</p>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</td>
-				<!-- <td>{{ $d->keterangan}}</td> -->
-			</tr>
-			@endforeach
-		</tbody>
-	</table>
+<table class="table table-bordered" id="users-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <!-- <th>Category</th> -->
+                <th>Kecamatan</th>
+                <th>Desa</th>
+                <th>Judul Berkas</th>
+                <th>Nilai</th>
+                <th>Bendahara</th>
+                <th>Ket Bendahara</th>
+                <th>SPM</th>
+                <th>Ket SPM</th>
+                <th>Pengguna Anggaran</th>
+                <th>Ket Pengguna Anggaran</th>
+
+            </tr>
+        </thead>
+    </table>
 </div>
 @endsection
+
+
+@push('scripts')
+<script>
+console.log('testing');
+$(function() {
+    $('#users-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{!! route('datatables.formulir_front') !!}'+'/'+{{$category->id}},
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'kecamatan', name: 'kecamatan',orderable:false,searchable:false },
+            { data: 'desa', name: 'desa',orderable:false,searchable:false },
+            { data: 'judul_berkas', name: 'judul_berkas' },
+            { data: 'nilai', name: 'nilai',render: $.fn.dataTable.render.number( ',', '.', 0, 'Rp ' ) },
+            { data: 'bendahara', name: 'bendahara',  render: function ( data, type, row ) {
+                if(data == '1'){
+                    return 'OK';
+                }
+                else{
+                    return '-';
+                }
+                }
+            },
+            { data: 'ket_bendahara', name: 'ket_bendahara' },
+            { data: 'spm', name: 'desa_id',  render: function ( data, type, row ) {
+                if(data == '1'){
+                    return 'OK';
+                }
+                else{
+                    return '-';
+                }
+                } },
+            { data: 'ket_spm', name: 'ket_spm' },
+            { data: 'pengguna_anggaran', name: 'pengguna_anggaran',  render: function ( data, type, row ) {
+                if(data == '1'){
+                    return 'OK';
+                }
+                else{
+                    return '-';
+                }
+                } },
+            { data: 'ket_pengguna_anggaran', name: 'ket_pengguna_anggaran' },
+        ],
+        dom: 'Bfrtip',
+        // pageLength: 10,
+        buttons: [
+            // 'copyHtml5',
+            'excelHtml5',
+            // 'csvHtml5',
+            'pdfHtml5'
+        ]
+    });
+});
+</script>
+@endpush
